@@ -1,0 +1,4 @@
+.sconsign.dblite
+Eigen
+checker.os
+libeigen_cxx_auto_checker_plugin.so
