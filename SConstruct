@@ -29,6 +29,7 @@ INCLUDES = [
 ]
 
 CFLAGS = [
+    '-g3',
     '-Wall',
     '-Werror=return-type',
 ] + cxxflags

@@ -44,7 +44,6 @@ class MyAstVisitor : public RecursiveASTVisitor<MyAstVisitor> {
         auto &mng = Context->getSourceManager();
         std::string filename = mng.getFilename(vd->getLocStart()).str();
         int line_no = mng.getSpellingLineNumber(vd->getLocStart());
-
         QualType qt = vd->getType();
         parseType(qt.getTypePtr(), filename, line_no);
         return true;
@@ -58,8 +57,10 @@ class MyAstVisitor : public RecursiveASTVisitor<MyAstVisitor> {
         std::string filename = mng.getFilename(S->getLocStart()).str();
         int line_no = mng.getSpellingLineNumber(S->getLocStart());
         auto *v = S->getRetValue();
-        QualType qt = v->getType();
-        parseType(qt.getTypePtr(), filename, line_no);
+        if (v) {
+            QualType qt = v->getType();
+            parseType(qt.getTypePtr(), filename, line_no);
+        }
         return true;
     }
 
@@ -79,7 +80,14 @@ class MyAstVisitor : public RecursiveASTVisitor<MyAstVisitor> {
         }
         if (clang::isa<clang::AutoType>(ty)) {
             const AutoType *at = clang::dyn_cast<AutoType>(ty);
-            parseType(at->getDeducedType().getTypePtr(), filename, line_no);
+            if (at->getDeducedType().getTypePtrOrNull() != nullptr) {
+                parseType(at->getDeducedType().getTypePtr(), filename, line_no);
+            } else {
+                // printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
+                // std::cout << filename << ":" << line_no << std::endl;
+                // at->dump();
+                // skip not deduced type (template type?)
+            }
         }
         if (clang::isa<clang::RecordType>(ty)) {
             const clang::RecordType *et = clang::dyn_cast<clang::RecordType>(ty);
@@ -117,10 +125,17 @@ class MyAstVisitor : public RecursiveASTVisitor<MyAstVisitor> {
     }
 
     bool invalidUsage(const std::string &path) {
+        std::string check_prefix = "Eigen::";
+        if (path.substr(0, check_prefix.size()) != check_prefix) {
+            return false;
+        }
         std::vector<std::string> allowed_list = {
             "Eigen::Matrix",
             "Eigen::Vector",
             "Eigen::Array",
+            "Eigen::internal::scalar_product_traits::ReturnType",
+            "Eigen::DenseCoeffsBase::Scalar",
+            "Eigen::LDLT",
         };
         for (auto &&allowed : allowed_list) {
             if (path.substr(0, allowed.size()) == allowed) {
