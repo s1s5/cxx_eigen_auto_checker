@@ -2,7 +2,7 @@
  * Copyright Shogo Sawai
  * @file example6.cpp
  * @brief
- * @author shogo.sawai@gmail.com (Shogo Sawai)
+ * @author Shogo Sawai
  * @date 2016-12-02 00:02:00
  */
 // https://eigen.tuxfamily.org/dox/TopicPitfalls.html
