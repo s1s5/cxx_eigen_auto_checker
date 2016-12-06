@@ -2,7 +2,7 @@
  * Copyright 2015- Co. Ltd. sizebook
  * @file test2.cpp
  * @brief
- * @author sawai@sizebook.co.jp (Shogo Sawai)
+ * @author Shogo Sawai
  * @date 2016-12-01 11:36:08
  */
 #include <iostream>
