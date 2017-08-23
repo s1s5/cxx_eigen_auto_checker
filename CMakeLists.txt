@@ -5,4 +5,4 @@ set(CMAKE_CXX_FLAGS "-std=c++1y -fPIC -fno-rtti")
 
 add_library(CXXEigenAutoChecker SHARED src/checker.cpp)
 SET_TARGET_PROPERTIES(CXXEigenAutoChecker PROPERTIES PREFIX "")
-
+INSTALL(TARGETS CXXEigenAutoChecker LIBRARY DESTINATION lib)
